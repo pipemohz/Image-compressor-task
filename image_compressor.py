@@ -23,7 +23,7 @@ class ImageCompressor():
             for _dir in self.get_platforms_dirs():
                 self.compress(directory=_dir)
 
-    def compress(self, directory=str) -> None:
+    def compress(self, directory: str) -> None:
 
         path = f'{OJS_DIR}{directory}{IMAGES_PATH}'
 
@@ -32,7 +32,7 @@ class ImageCompressor():
         except FileNotFoundError:
             pass
         else:
-            folders = (os.listdir(path))
+            folders = os.listdir(path)
 
             if folders:
                 for folder in folders:
