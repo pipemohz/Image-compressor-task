@@ -1,8 +1,12 @@
 from PIL import Image
+from dotenv import load_dotenv
 import os
+from os.path import join, dirname
 
-OJS_DIR = '/var/www/ojs3/'
-IMAGES_PATH = '/ojs/public/journals/'
+
+dotenv_path = join(dirname(__file__), '.env')
+
+load_dotenv(dotenv_path)
 SIZE = (450, 580)
 
 
@@ -11,26 +15,35 @@ class ImageCompressor():
         self.optimize_images()
 
     def get_platforms_dirs(self) -> list:
+        """
+        Returns a list of all platforms installed in OJS_DIR. If folder not exists, it catches the error and returns a message.
+        """
         try:
-            os.listdir(OJS_DIR)
+            os.listdir(os.environ.get('OJS_DIR'))
         except FileNotFoundError:
-            return None
+            print(f"There are no platforms in {os.getenv('OJS_DIR')}.")
         else:
-            return os.listdir(OJS_DIR)
+            return os.listdir(os.environ.get('OJS_DIR'))
 
     def optimize_images(self) -> None:
+        """
+        Initializes the compression task of images in the IMAGES_PATH of each platform in OJS_DIR.
+        """
         if self.get_platforms_dirs():
             for _dir in self.get_platforms_dirs():
                 self.compress(directory=_dir)
 
     def compress(self, directory: str) -> None:
+        """
+        Executes the compression of images in the IMAGES_PATH of a directory in OJS_DIR. If journals folder not exist, it catches the error and returns a message.
+        """
 
-        path = f'{OJS_DIR}{directory}{IMAGES_PATH}'
+        path = f"{os.environ.get('OJS_DIR')}/{directory}/{os.environ.get('IMAGES_PATH')}"
 
         try:
             os.listdir(path)
         except FileNotFoundError:
-            pass
+            print(f"There are no journals in {directory}.")
         else:
             folders = os.listdir(path)
 
@@ -42,5 +55,6 @@ class ImageCompressor():
                     if covers:
                         for image in covers:
                             with Image.open(f'{path}{folder}/{image}') as img:
-                                img = img.resize(SIZE)
-                                img.save(f'{path}{folder}/{image}')
+                                if img.size() > SIZE:
+                                    img = img.resize(SIZE)
+                                    img.save(f'{path}{folder}/{image}')
