@@ -1,7 +1,9 @@
+import logging
 from PIL import Image
-from dotenv import load_dotenv, dotenv_values
+from dotenv import dotenv_values
 import os
 from os.path import join, dirname
+import datetime as dt
 
 
 dotenv_path = join(dirname(__file__), '.env')
@@ -18,6 +20,7 @@ class ImageCompressor():
         Check if a .env file exists in folder and contains required environment variables.
         """
         if config.get('OJS_DIR') == None or config.get('IMAGES_PATH') == None:
+            logging.critical('There is no a valid .env file in folder.')
             raise FileNotFoundError('There is no a valid .env file in folder.')
 
     def get_platforms_dirs(self) -> list:
@@ -27,7 +30,7 @@ class ImageCompressor():
         try:
             os.listdir(config.get('OJS_DIR'))
         except FileNotFoundError:
-            print(f"There are no platforms in {config.get('OJS_DIR')}.")
+            logging.error(f"[{dt.datetime.now()}] There are no platforms in {config.get('OJS_DIR')}.")
         else:
             return os.listdir(config.get('OJS_DIR'))
 
@@ -50,10 +53,10 @@ class ImageCompressor():
         try:
             os.listdir(path)
         except FileNotFoundError:
-            print(f"There are no journals in {directory}.")
+            logging.error(f"[{dt.datetime.now()}] No journals folder found in {directory}.")
         else:
             folders = os.listdir(path)
-
+            logging.info(f"[{dt.datetime.now()}] Checking folder {directory}.")
             if folders:
                 for folder in folders:
                     files = os.listdir(f"{path}{folder}")
@@ -65,3 +68,4 @@ class ImageCompressor():
                                 if img.size > SIZE:
                                     img = img.resize(SIZE)
                                     img.save(f'{path}{folder}/{image}')
+                                    logging.info(f"[{dt.datetime.now()}] Image {image} compressed.")

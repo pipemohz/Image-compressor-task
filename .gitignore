@@ -143,3 +143,6 @@ journals/
 revistas/
 compress.py
 compressor-old.py
+
+#log files
+.log
