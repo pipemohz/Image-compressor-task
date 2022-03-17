@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 from image_compressor import ImageCompressor
 import logging
 from os.path import join

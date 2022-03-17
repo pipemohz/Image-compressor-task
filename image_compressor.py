@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 import logging
 from PIL import Image
 import os
