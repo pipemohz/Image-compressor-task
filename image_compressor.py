@@ -41,7 +41,9 @@ class ImageCompressor():
             logging.error(
                 f"[{dt.datetime.now()}] There are no platforms in {self.ojs_dir}.")
         else:
-            return os.listdir(self.ojs_dir)
+            dirs = [item for item in os.listdir(self.ojs_dir) if os.path.isdir(
+                os.path.join(self.ojs_dir, item))]
+            return dirs
 
     def optimize_images(self) -> None:
         """
