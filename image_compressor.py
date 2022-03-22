@@ -64,7 +64,9 @@ class ImageCompressor():
             logging.error(
                 f"[{dt.datetime.now()}] No journals folder found in {directory}.")
         else:
-            folders = os.listdir(path)
+            folders = [item for item in os.listdir(
+                path) if os.path.isdir(os.path.join(path, item))]
+
             logging.info(f"[{dt.datetime.now()}] Checking folder {directory}.")
             if folders:
                 for folder in folders:
